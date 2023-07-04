@@ -38,8 +38,8 @@ digitList *trimDigitList(digitList* L)
 	while (p != nullptr) {
 		if (p->digit != 0) {
 			lastNotZero = p;
-			p = p->nextDigit;
 		}
+		p = p->nextDigit;
 	}
 
 	if (lastNotZero == nullptr) {
@@ -115,7 +115,7 @@ Integer computeValue(int operatorNum)
 			L1 = 0;
 			break;
 		}
-		// L1 = L1.trimDigit();
+		L1 = L1.trimDigit();
 	}
 	
 	return L1;
@@ -137,12 +137,24 @@ Integer Integer::operator +(Integer L)
 		} else if (compareDigitLists(digits, L.digits) == -1) {
 			return Integer(L.sign, subDigitLists(0, L.digits, digits));
 		}
+	} else if (sign == -1 && L.sign == 1) {
+		if (compareDigitLists(digits, L.digits) == 1) {
+			return Integer(sign, subDigitLists(0, digits, L.digits));
+		} else if (compareDigitLists(digits, L.digits) == 0) {
+			return Integer(L.sign, subDigitLists(0, digits, L.digits));
+		} else if (compareDigitLists(digits, L.digits) == -1) {
+			return Integer(L.sign, subDigitLists(0, L.digits, digits));
+		}
 	}
 }
 
 Integer Integer::operator -(Integer L)
 {
-	return Integer();
+	if (compareDigitLists(digits, L.digits) >= 0) {
+		return Integer(sign, subDigitLists(0, digits, L.digits));
+	} else if (compareDigitLists(digits, L.digits) == -1) {
+		return Integer(-1, subDigitLists(0, digits, L.digits));
+	}
 }
 
 Integer Integer::leftDigits(int n)
